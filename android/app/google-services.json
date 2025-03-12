@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "211486070399",
+    "firebase_url": "https://i-read-tentative-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "i-read-tentative",
+    "storage_bucket": "i-read-tentative.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211486070399:android:043f17317ba064371c514a",
+        "android_client_info": {
+          "package_name": "com.example.i_read_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlibaUjI85wpKWs9qFxUwAfnccNmYwCro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,45 @@
+{
+    "modules": [
+      {
+        "title": "Reading Comprehension",
+        "questions": [
+          {
+            "question": "What is the main idea of the passage?",
+            "correctAnswer": "Option A",
+            "options": [
+              "Option A",
+              "Option B",
+              "Option C",
+              "Option D"
+            ],
+            "type": "multiple-choice",
+            "shortStory": "Here is the short story or passage."
+          },
+          {
+            "question": "What did the character learn?",
+            "correctAnswer": "Lesson B",
+            "options": [
+              "Lesson A",
+              "Lesson B",
+              "Lesson C",
+              "Lesson D"
+            ],
+            "type": "multiple-choice",
+            "shortStory": "Another short story or passage."
+          },
+          {
+            "question": "What did the character learn?",
+            "correctAnswer": "Lesson C",
+            "options": [
+              "Lesson A",
+              "Lesson B",
+              "Lesson C",
+              "Lesson D"
+            ],
+            "type": "multiple-choice",
+            "shortStory": "Another short story or passage."
+          }
+        ]
+      }
+    ]
+  }

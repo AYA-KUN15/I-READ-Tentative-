@@ -1,0 +1,49 @@
+name: i_read_app
+description: "A new Flutter project."
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^4.0.4
+  intl: ^0.19.0
+  firebase_auth: ^5.1.4
+  cloud_firestore: ^5.2.1
+  firebase_core: ^3.3.0
+  firebase_analytics: ^11.2.1
+  font_awesome_flutter: ^10.7.0
+  flutter_plugin_android_lifecycle: ^2.0.0
+  record: ^5.2.0
+  flutter_tts: ^4.0.2
+  speech_to_text: ^7.0.0
+  image_picker: ^1.1.2
+  shared_preferences: ^2.0.0
+  permission_handler: ^11.0.0
+  http: ^1.2.2
+  flutter_secure_storage: ^5.0.2
+  path_provider: ^2.1.5
+  flutter_sound: ^9.6.0
+  url_launcher: ^6.3.1
+  string_similarity: ^2.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/black_logo_readi.png  # Use forward slashes
+    - assets/white_logo_readi.png  # Use forward slashes
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo_readi.png"  # Specify a full valid path to an image
