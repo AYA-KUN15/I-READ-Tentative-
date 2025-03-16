@@ -51,17 +51,30 @@ class _ProfileMenuState extends State<ProfileMenu> {
 
     return WillPopScope(
       onWillPop: () async {
-        return true; // Exit the app when back is pressed
+        Navigator.pushNamed(context, '/home');
+        return false; // Prevent default back button behavior
       },
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue[900]!, Colors.blue[700]!],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFF5E8C7), // Manila paper background
+          elevation: 0, // Remove shadow
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF8B4513)),
+            onPressed: () {
+              Navigator.pushNamed(context, '/home');
+            },
+          ),
+          title: Text(
+            'Profile',
+            style: GoogleFonts.montserrat(
+              color: const Color(0xFF8B4513), // Brown text
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
           ),
+        ),
+        body: Container(
+          color: const Color(0xFFF5E8C7), // Manila paper background
           padding: EdgeInsets.symmetric(
               horizontal: width * 0.05, vertical: height * 0.02),
           child: Column(
@@ -71,8 +84,13 @@ class _ProfileMenuState extends State<ProfileMenu> {
               Center(
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundImage:
-                      AssetImage('assets/i_read_pic_old.png'), // Default image
+                  backgroundColor: const Color(0xFFF5E8C7), // Manila paper
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 120,
+                    color:
+                        const Color(0xFF8B4513).withOpacity(0.5), // Light brown
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -82,9 +100,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ? 'Loading...'
                       : fullName, // Show 'Loading...' until the data is fetched
                   style: GoogleFonts.montserrat(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 24,
+                    color: const Color(0xFF8B4513), // Brown text
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               Center(
@@ -93,20 +112,25 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ? 'Loading...'
                       : strand, // Handle empty or loading strand value
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: Colors.white),
+                  style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513)), // Brown text
                 ),
               ),
               Center(
                 child: Text(
                   schoolName, // Add school name here
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(color: Colors.white),
+                  style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513)), // Brown text
                 ),
               ),
               const SizedBox(height: 20),
-              Text('Statistics',
-                  style: GoogleFonts.montserrat(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+              Text(
+                'Statistics',
+                style: GoogleFonts.montserrat(
+                    color: const Color(0xFF8B4513), // Brown text
+                    fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
               Expanded(
                 child: Column(
@@ -122,83 +146,60 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    _buildStatCard('Modules Completed',
-                        '$completedModules/$totalModules'),
+                    _buildStatCard(
+                        'Modules Completed', '$completedModules/$totalModules'),
                   ],
                 ),
               ),
-
-              Text('Points earned per module',
-                  style: GoogleFonts.montserrat(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+              Text(
+                'Points earned per module',
+                style: GoogleFonts.montserrat(
+                    color: const Color(0xFF8B4513), // Brown text
+                    fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
               Expanded(
                 child: ListView.builder(
-                    itemCount: completedModuelsList?.length,
-                    itemBuilder: (context, index) {
-                      CompletedModule? currentModule =
-                          completedModuelsList?[index];
-                      return _buildStatCard(currentModule?.moduleTitle ?? '',
-                          currentModule?.pointsEarned.toString() ?? '');
-                    }),
+                  itemCount: completedModuelsList?.length,
+                  itemBuilder: (context, index) {
+                    CompletedModule? currentModule =
+                        completedModuelsList?[index];
+                    return _buildStatCard(currentModule?.moduleTitle ?? '',
+                        currentModule?.pointsEarned.toString() ?? '');
+                  },
+                ),
               ),
             ],
           ),
         ),
-        bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
   }
 
   Widget _buildStatCard(String title, String value) {
     return Card(
-      color: Colors.blue[800],
+      color: const Color.fromARGB(255, 249, 222, 194), // Lighter manila shade
       margin: const EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(title,
-                style: GoogleFonts.montserrat(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
-            Text(value,
-                style:
-                    GoogleFonts.montserrat(color: Colors.white, fontSize: 20)),
+            Text(
+              title,
+              style: GoogleFonts.montserrat(
+                  color: const Color(0xFF8B4513), // Brown text
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              value,
+              style: GoogleFonts.montserrat(
+                  color: const Color(0xFF8B4513), // Brown text
+                  fontSize: 20),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar(BuildContext context) {
-    return BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Modules'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-      ],
-      currentIndex: 2,
-      selectedItemColor: Colors.blue[900],
-      unselectedItemColor: Colors.lightBlue,
-      backgroundColor: Colors.white,
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.pushNamed(context, '/home');
-            break;
-          case 1:
-            Navigator.pushNamed(context, '/modules_menu');
-            break;
-          case 2:
-            Navigator.pushNamed(context, '/profile_menu');
-            break;
-          case 3:
-            Navigator.pushNamed(context, '/settings_menu');
-            break;
-        }
-      },
     );
   }
 }

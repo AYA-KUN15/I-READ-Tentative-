@@ -7,6 +7,7 @@ import 'package:i_read_app/models/module.dart';
 import 'package:i_read_app/models/question.dart';
 import 'package:i_read_app/services/api.dart';
 import 'package:i_read_app/services/storage.dart';
+import '../../../pages/modulecontent_page.dart';
 
 class ReadCompQuiz extends StatefulWidget {
   final String moduleTitle;
@@ -42,8 +43,6 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
 
   Question? currentQuestion;
   int currentQuestionIndex = 0;
-  late Timer _timer;
-  int _remainingTime = 300; // 5 minutes for each question
   bool isCalculatingResults = false;
 
   @override
@@ -54,7 +53,6 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
   }
 
@@ -92,24 +90,7 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
       setState(() {
         isLoading = false;
       });
-      _startTimer();
     }
-  }
-
-  void _startTimer() {
-    _remainingTime = 300;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingTime > 0) {
-        if (mounted) {
-          setState(() {
-            _remainingTime--;
-          });
-        }
-      } else {
-        _timer.cancel();
-        _nextQuestion();
-      }
-    });
   }
 
   void _nextQuestion() {
@@ -126,7 +107,6 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
         selectedAnswerIndex = -1;
         feedbackMessage = '';
       });
-      _startTimer(); // Restart timer for next question
     } else {
       _showResults();
     }
@@ -149,25 +129,38 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              backgroundColor: Colors.blue,
+              backgroundColor: const Color(0xFFF5E8C7), // Manila paper
               title: Text(
                 '$moduleTitle Quiz Complete',
-                style: GoogleFonts.montserrat(color: Colors.white),
+                style: GoogleFonts.montserrat(
+                  color: const Color(0xFF8B4513), // Brown
+                ),
               ),
               content: Text(
                 'Score: ${response['score']}/${questions.length}\nMistakes: ${questions.length - response['score']}\nXP Earned: ${response['points_gained']}',
-                style: GoogleFonts.montserrat(color: Colors.white),
+                style: GoogleFonts.montserrat(
+                  color: const Color(0xFF8B4513), // Brown
+                ),
               ),
               actions: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(context).pop(); // Close dialog
-                    Navigator.pop(context); // Return to ModuleContentPage
-                    Navigator.pop(context); // Return to ReadCompEasy
+                    // Navigate back to ModuleContentPage
+                    final module = (await apiService.getModules())
+                        .firstWhere((m) => m.id == widget.uniqueIds[0]);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ModuleContentPage(module: module),
+                      ),
+                    );
                   },
                   child: Text(
                     'Done',
-                    style: GoogleFonts.montserrat(color: Colors.white),
+                    style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513), // Brown
+                    ),
                   ),
                 ),
               ],
@@ -185,49 +178,135 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
     }
   }
 
+  Future<bool> _showConfirmationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFFF5E8C7), // Manila paper
+              title: Text(
+                'Confirm Exit',
+                style: GoogleFonts.montserrat(
+                  color: const Color(0xFF8B4513), // Brown
+                ),
+              ),
+              content: Text(
+                'All your progress will be lost if you go back. Are you sure?',
+                style: GoogleFonts.montserrat(
+                  color: const Color(0xFF8B4513), // Brown
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // "No" - stay on page
+                  },
+                  child: Text(
+                    'No',
+                    style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513), // Brown
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(true); // "Yes" - proceed to go back
+                  },
+                  child: Text(
+                    'Yes',
+                    style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513), // Brown
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // Default to false if dialog is dismissed
+  }
+
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context);
-        return false;
+        // Show confirmation dialog when back button is pressed
+        bool shouldGoBack = await _showConfirmationDialog();
+        if (shouldGoBack) {
+          // Navigate back to ModuleContentPage
+          final module = (await apiService.getModules())
+              .firstWhere((m) => m.id == widget.uniqueIds[0]);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ModuleContentPage(module: module),
+            ),
+          );
+        }
+        return false; // Prevent default back behavior
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Quiz', style: GoogleFonts.montserrat()),
-          backgroundColor: Colors.blue[900],
-          foregroundColor: Colors.white,
-          actions: [
-            const Icon(Icons.access_time),
-            const SizedBox(width: 10),
-            Text(
-              '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
-              style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18),
+          backgroundColor: const Color(0xFFF5E8C7), // Manila paper
+          elevation: 0, // Flat look
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back,
+                color: Color(0xFF8B4513)), // Brown back arrow
+            onPressed: () async {
+              // Show confirmation dialog when AppBar back button is pressed
+              bool shouldGoBack = await _showConfirmationDialog();
+              if (shouldGoBack) {
+                // Navigate back to ModuleContentPage
+                final module = (await apiService.getModules())
+                    .firstWhere((m) => m.id == widget.uniqueIds[0]);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ModuleContentPage(module: module),
+                  ),
+                );
+              }
+            },
+          ),
+          title: Text(
+            'Question #${currentQuestionIndex + 1}',
+            style: GoogleFonts.montserrat(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF8B4513),
             ),
-            const SizedBox(width: 10),
-          ],
+          ),
+          centerTitle: true,
         ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF003366), Color(0xFF0052CC)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          color: const Color(0xFFF5E8C7), // Manila paper background
           child: isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF8B4513), // Brown
+                  ),
+                )
               : questions.isEmpty
                   ? const Center(
                       child: Text(
                         'No questions available.',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Color(0xFF8B4513), // Brown
+                          fontFamily: 'Montserrat',
+                        ),
                       ),
                     )
                   : isCalculatingResults
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF8B4513), // Brown
+                          ),
+                        )
                       : SingleChildScrollView(
                           child: _buildQuizContent(),
                         ),
@@ -241,13 +320,7 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
     final options = questions[currentQuestionIndex].choices;
 
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF003366), Color(0xFF0052CC)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
+      color: const Color(0xFFF5E8C7), // Manila paper background
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -256,14 +329,16 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
           children: [
             Text(
               question,
-              style: GoogleFonts.montserrat(fontSize: 18, color: Colors.white),
+              style: GoogleFonts.montserrat(
+                fontSize: 18,
+                color: const Color(0xFF8B4513), // Brown
+              ),
             ),
             const SizedBox(height: 20),
             Column(
               children: options.map<Widget>((option) {
                 return Padding(
-                  padding:
-                      const EdgeInsets.only(bottom: 10.0), // Fix to 'bottom'
+                  padding: const EdgeInsets.only(bottom: 10.0),
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
@@ -275,9 +350,11 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           selectedAnswerIndex == options.indexOf(option)
-                              ? Colors.orange
-                              : Colors.blue[700],
-                      minimumSize: const Size(double.infinity, 50),
+                              ? const Color(0xFF8B4513) // Brown for selected
+                              : const Color(0xFF8B4513)
+                                  .withOpacity(0.8), // Lighter brown
+                      minimumSize:
+                          const Size(double.infinity, 60), // Larger buttons
                     ),
                     child: Text(
                       option.text,
@@ -295,7 +372,9 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: selectedAnswerIndex != -1
+                    ? const Color(0xFF8B4513) // Brown when enabled
+                    : Colors.grey, // Grey when disabled
                 minimumSize: const Size(150, 40),
               ),
               child: Text(
@@ -315,15 +394,25 @@ class _ReadCompQuizState extends State<ReadCompQuiz> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
+          backgroundColor: const Color(0xFFF5E8C7), // Manila paper
+          title: Text(
+            'Error',
+            style: GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
+          ),
+          content: Text(
+            message,
+            style: GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close dialog
                 Navigator.pop(context); // Back to ModuleContentPage
               },
-              child: const Text('OK'),
+              child: Text(
+                'OK',
+                style: GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
+              ),
             ),
           ],
         );

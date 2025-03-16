@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:i_read_app/models/module.dart';
 import 'package:i_read_app/services/api.dart';
 
-import '../../pages/modulecontent_page.dart'; // Import the new file
+import '../../pages/modulecontent_page.dart';
 
 class ReadCompEasy extends StatefulWidget {
   const ReadCompEasy({super.key});
@@ -33,56 +33,79 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Easy Reading Comprehension',
-          style: GoogleFonts.montserrat(),
-        ),
-        backgroundColor: Colors.blue[900],
-        foregroundColor: Colors.white,
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue[900]!, Colors.blue[700]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        padding: const EdgeInsets.all(20.0),
-        child: FutureBuilder<List<Module>>(
-          future: _easyModulesFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  'Error loading modules: ${snapshot.error}',
-                  style: GoogleFonts.montserrat(color: Colors.white),
-                ),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Text(
-                  'No Easy modules available',
-                  style: GoogleFonts.montserrat(color: Colors.white),
-                ),
-              );
-            }
+    double width = MediaQuery.of(context).size.width;
 
-            final easyModules = snapshot.data!;
-            return SingleChildScrollView(
-              child: Column(
-                children: easyModules
-                    .map((module) => _buildModuleButton(context, module))
-                    .toList(),
-              ),
-            );
-          },
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushNamed(context,
+            '/reading_comprehension_levels'); // Navigate back to ReadingComprehensionLevels
+        return false; // Prevent default back behavior
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFF5E8C7), // Manila paper
+          elevation: 0, // Flat look
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back,
+                color: Color(0xFF8B4513)), // Brown back arrow
+            onPressed: () {
+              Navigator.pushNamed(context, '/reading_comprehension_levels');
+            },
+          ),
+          title: Text(
+            'Easy',
+            style: GoogleFonts.montserrat(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF8B4513),
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: const Color(0xFFF5E8C7), // Manila paper background
+          padding: const EdgeInsets.all(20.0),
+          child: FutureBuilder<List<Module>>(
+            future: _easyModulesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF8B4513), // Brown
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'Error loading modules: ${snapshot.error}',
+                    style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513), // Brown
+                    ),
+                  ),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text(
+                    'No Easy modules available',
+                    style: GoogleFonts.montserrat(
+                      color: const Color(0xFF8B4513), // Brown
+                    ),
+                  ),
+                );
+              }
+
+              final easyModules = snapshot.data!;
+              return SingleChildScrollView(
+                child: Column(
+                  children: easyModules
+                      .map((module) => _buildModuleButton(context, module))
+                      .toList(),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -90,10 +113,9 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
 
   Widget _buildModuleButton(BuildContext context, Module module) {
     return Padding(
-      padding:
-          const EdgeInsets.only(bottom: 10.0), // Should be 'bottom' (see note)
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: SizedBox(
-        width: 300,
+        width: 400, // Increased width
         child: ElevatedButton(
           onPressed: () {
             Navigator.push(
@@ -104,7 +126,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
+            backgroundColor: const Color(0xFF8B4513), // Brown
             padding: const EdgeInsets.symmetric(vertical: 25),
           ),
           child: Text(
@@ -112,7 +134,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             style: GoogleFonts.montserrat(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Colors.white, // White text
             ),
             textAlign: TextAlign.center,
           ),

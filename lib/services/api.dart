@@ -13,44 +13,45 @@ class ApiService {
   // Initialize secure storage
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
- Future<AccessToken?> postGenerateToken(String email, String password) async {
-  try {
-    // Request body
-    Map<String, String> requestBody = {
-      "email": email,
-      "password": password,
-    };
+  Future<AccessToken?> postGenerateToken(String email, String password) async {
+    try {
+      // Request body
+      Map<String, String> requestBody = {
+        "email": email,
+        "password": password,
+      };
 
-    // Request body
-    Map<String, String> requestHeader = {
-      "Content-Type": 'application/json',
-    };
+      // Request body
+      Map<String, String> requestHeader = {
+        "Content-Type": 'application/json',
+      };
 
-    var url = Uri.parse('${Constants.baseUrl}/api/token');
-    var response = await http
-        .post(url, headers: requestHeader, body: jsonEncode(requestBody))
-        .timeout(const Duration(seconds: 10)); // Set timeout to 10 seconds
+      var url = Uri.parse('${Constants.baseUrl}/api/token');
+      var response = await http
+          .post(url, headers: requestHeader, body: jsonEncode(requestBody))
+          .timeout(const Duration(seconds: 10)); // Set timeout to 10 seconds
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      AccessToken accessToken = AccessToken.fromJson(data);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        AccessToken accessToken = AccessToken.fromJson(data);
 
-      // Store token securely
-      await _secureStorage.write(
-        key: 'accessToken',
-        value: accessToken.accessToken,
-      );
+        // Store token securely
+        await _secureStorage.write(
+          key: 'accessToken',
+          value: accessToken.accessToken,
+        );
 
-      return accessToken;
-    } else {
-      log('Failed to retrieve access token. Status code: ${response.statusCode}');
-      throw 'Failed to retrieve access token. Status code: ${response.statusCode}';
+        return accessToken;
+      } else {
+        log('Failed to retrieve access token. Status code: ${response.statusCode}');
+        throw 'Failed to retrieve access token. Status code: ${response.statusCode}';
+      }
+    } catch (e) {
+      log(e.toString());
+      throw e.toString();
     }
-  } catch (e) {
-    log(e.toString());
-    throw e.toString();
   }
-}
+
   Future<UserProfile?> getProfile() async {
     try {
       String? accessToken = await getStoredAccessToken();
@@ -136,7 +137,7 @@ class ApiService {
     }
   }
 
-  Future<Map<String,dynamic>> getQuestionAnswer(String questionId) async {
+  Future<Map<String, dynamic>> getQuestionAnswer(String questionId) async {
     try {
       String? accessToken = await getStoredAccessToken();
       // Request body
@@ -145,8 +146,7 @@ class ApiService {
         "Authorization": 'Bearer $accessToken',
       };
 
-      var url =
-          Uri.parse('${Constants.baseUrl}/api/questions/$questionId');
+      var url = Uri.parse('${Constants.baseUrl}/api/questions/$questionId');
       var response = await http.get(url, headers: requestHeader);
 
       if (response.statusCode == 200) {
@@ -205,7 +205,8 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> postAssessPronunciation(String filePath, String referenceText, questionId) async {
+  Future<Map<String, dynamic>> postAssessPronunciation(
+      String filePath, String referenceText, questionId) async {
     try {
       String? accessToken = await getStoredAccessToken();
 
@@ -236,7 +237,7 @@ class ApiService {
       if (response.statusCode == 200) {
         var responseBody = await http.Response.fromStream(response);
         log('File uploaded successfully: ${responseBody.body}');
-         Map<String, dynamic> data = jsonDecode(responseBody.body);
+        Map<String, dynamic> data = jsonDecode(responseBody.body);
         return data;
       } else {
         log('File upload failed with status: ${response.statusCode}');

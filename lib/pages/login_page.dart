@@ -4,6 +4,8 @@ import 'package:i_read_app/models/module.dart';
 import 'package:i_read_app/models/user.dart';
 import 'package:i_read_app/services/api.dart';
 import 'package:i_read_app/services/storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   String? _passwordError;
   ApiService apiService = ApiService();
   StorageService storageService = StorageService();
+  final storage = FlutterSecureStorage();
 
   bool _isEmailValid(String email) {
     final emailRegExp =
@@ -86,9 +89,16 @@ class _LoginPageState extends State<LoginPage> {
           await storageService.storeUserProfile(userProfile);
         }
 
-        if (modules.isNotEmpty) {
+        if (modules != null && modules.isNotEmpty) {
           await storageService.storeModules(modules);
         }
+
+        // Save login information
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        await prefs.setInt('loginTime', DateTime.now().millisecondsSinceEpoch);
+        await storage.write(key: 'email', value: email);
+        await storage.write(key: 'password', value: password);
 
         Navigator.of(context).pushReplacementNamed('/home');
       } catch (e) {
