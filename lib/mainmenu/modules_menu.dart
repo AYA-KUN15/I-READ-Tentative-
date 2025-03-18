@@ -4,7 +4,8 @@ import 'package:i_read_app/services/api.dart';
 import 'package:i_read_app/models/module.dart';
 
 class ModulesMenu extends StatefulWidget {
-  const ModulesMenu({super.key, required Null Function(dynamic modules) onModulesUpdated});
+  const ModulesMenu(
+      {super.key, required Null Function(dynamic modules) onModulesUpdated});
 
   @override
   _ModulesMenuState createState() => _ModulesMenuState();
@@ -196,15 +197,14 @@ class _ModulesMenuState extends State<ModulesMenu> {
                                     context, '/reading_comprehension_levels');
                               } else if (currentModule ==
                                   'Word Pronunciation') {
-                                Navigator.pushNamed(
-                                    context, '/word_pronunciation_levels');
+                                Navigator.pushNamed(context, '/wordpro_levels');
                               } else if (currentModule ==
                                   'Sentence Composition') {
                                 Navigator.pushNamed(
-                                    context, '/sentence_composition_levels');
+                                    context, '/sentcomp_levels');
                               } else if (currentModule == 'Vocabulary Skills') {
                                 Navigator.pushNamed(
-                                    context, '/vocabulary_skills_levels');
+                                    context, '/vocabskills_levels');
                               }
                             },
                           ),

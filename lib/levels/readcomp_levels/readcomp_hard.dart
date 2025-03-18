@@ -119,7 +119,10 @@ class _ReadCompHardState extends State<ReadCompHard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ModuleContentPage(module: module),
+                builder: (context) => ModuleContentPage(
+                  module: module,
+                  backRoute: '/read_comp_hard',
+                ),
               ),
             );
           },

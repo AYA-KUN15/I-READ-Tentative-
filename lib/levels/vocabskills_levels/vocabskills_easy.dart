@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:i_read_app/models/module.dart';
 import 'package:i_read_app/services/api.dart';
-
 import '../../pages/modulecontent_page.dart';
 
-class ReadCompEasy extends StatefulWidget {
-  const ReadCompEasy({super.key});
+class VocabSkillsEasy extends StatefulWidget {
+  const VocabSkillsEasy({super.key});
 
   @override
-  _ReadCompEasyState createState() => _ReadCompEasyState();
+  _VocabSkillsEasyState createState() => _VocabSkillsEasyState();
 }
 
-class _ReadCompEasyState extends State<ReadCompEasy> {
+class _VocabSkillsEasyState extends State<VocabSkillsEasy> {
   final ApiService apiService = ApiService();
   late Future<List<Module>> _easyModulesFuture;
 
@@ -27,7 +26,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
     return modules
         .where((module) =>
             module.difficulty == 'Easy' &&
-            module.category == 'Reading Comprehension')
+            module.category == 'Vocabulary Skills')
         .toList();
   }
 
@@ -37,8 +36,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushNamed(context,
-            '/reading_comprehension_levels'); // Navigate back to ReadingComprehensionLevels
+        Navigator.pushNamed(context, '/vocabskills_levels');
         return false; // Prevent default back behavior
       },
       child: Scaffold(
@@ -49,7 +47,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             icon: const Icon(Icons.arrow_back,
                 color: Color(0xFF8B4513)), // Brown back arrow
             onPressed: () {
-              Navigator.pushNamed(context, '/reading_comprehension_levels');
+              Navigator.pushNamed(context, '/vocabskills_levels');
             },
           ),
           title: Text(
@@ -72,26 +70,22 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
-                  child: CircularProgressIndicator(
-                    color: Color(0xFF8B4513), // Brown
-                  ),
+                  child: CircularProgressIndicator(color: Color(0xFF8B4513)),
                 );
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text(
                     'Error loading modules: ${snapshot.error}',
-                    style: GoogleFonts.montserrat(
-                      color: const Color(0xFF8B4513), // Brown
-                    ),
+                    style:
+                        GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
                   ),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
                   child: Text(
                     'No Easy modules available',
-                    style: GoogleFonts.montserrat(
-                      color: const Color(0xFF8B4513), // Brown
-                    ),
+                    style:
+                        GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
                   ),
                 );
               }
@@ -115,7 +109,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: SizedBox(
-        width: 400, // Increased width
+        width: 400,
         child: ElevatedButton(
           onPressed: () {
             Navigator.push(
@@ -123,7 +117,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
               MaterialPageRoute(
                 builder: (context) => ModuleContentPage(
                   module: module,
-                  backRoute: '/read_comp_easy',
+                  backRoute: '/vocabskills_easy',
                 ),
               ),
             );
@@ -137,7 +131,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             style: GoogleFonts.montserrat(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white, // White text
+              color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),

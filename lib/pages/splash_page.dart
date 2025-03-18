@@ -167,7 +167,7 @@ class _SplashPageState extends State<SplashPage>
                   ),
                   const SizedBox(height: 20), // Padding below the buttons
                   const Text(
-                    'V2 (Alpha 4.1)',
+                    'V2 (Alpha 4.1.1)',
                     style: TextStyle(
                       color: Color(0xFF8B4513), // Brown text
                       fontSize: 14,

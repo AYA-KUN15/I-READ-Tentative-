@@ -120,7 +120,10 @@ class _ReadCompMediumState extends State<ReadCompMedium> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ModuleContentPage(module: module),
+                builder: (context) => ModuleContentPage(
+                  module: module,
+                  backRoute: '/read_comp_medium',
+                ),
               ),
             );
           },

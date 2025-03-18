@@ -9,9 +9,9 @@ import 'package:i_read_app/services/api.dart';
 import 'package:i_read_app/services/storage.dart';
 import '../help.dart';
 import '../levels/readcomp_levels/readcomp_levels.dart';
-import '../levels/sentcomp_levels.dart';
-import '../levels/vocabskills_levels.dart';
-import '../levels/wordpro_levels.dart';
+import '../levels/sentcomp_levels/sentcomp_levels.dart';
+import '../levels/vocabskills_levels/vocabskills_levels.dart';
+import '../levels/wordpro_levels/wordpro_levels.dart';
 
 class HomeMenu extends StatefulWidget {
   final List<String> uniqueIds;

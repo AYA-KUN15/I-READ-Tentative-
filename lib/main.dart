@@ -12,9 +12,18 @@ import 'levels/readcomp_levels/readcomp_easy.dart';
 import 'levels/readcomp_levels/readcomp_hard.dart';
 import 'levels/readcomp_levels/readcomp_levels.dart';
 import 'levels/readcomp_levels/readcomp_medium.dart';
-import 'levels/sentcomp_levels.dart';
-import 'levels/vocabskills_levels.dart';
-import 'levels/wordpro_levels.dart';
+import 'levels/sentcomp_levels/sentcomp_levels.dart';
+import 'levels/vocabskills_levels/vocabskills_levels.dart';
+import 'levels/wordpro_levels/wordpro_levels.dart';
+import 'levels/wordpro_levels/wordpro_easy.dart'; // Add these imports
+import 'levels/wordpro_levels/wordpro_medium.dart';
+import 'levels/wordpro_levels/wordpro_hard.dart';
+import 'levels/sentcomp_levels/sentcomp_easy.dart';
+import 'levels/sentcomp_levels/sentcomp_medium.dart';
+import 'levels/sentcomp_levels/sentcomp_hard.dart';
+import 'levels/vocabskills_levels/vocabskills_easy.dart';
+import 'levels/vocabskills_levels/vocabskills_medium.dart';
+import 'levels/vocabskills_levels/vocabskills_hard.dart';
 import 'mainmenu/home_menu.dart';
 import 'mainmenu/modules_menu.dart';
 import 'mainmenu/profile_menu.dart';
@@ -98,7 +107,7 @@ class MyApp extends StatelessWidget {
         '/help': (context) => const HelpPage(),
       },
       onGenerateRoute: (settings) {
-        // Add dynamic routes if needed (e.g., for read_comp_easy, read_comp_medium, etc.)
+        // Dynamic routes for difficulty levels
         if (settings.name == '/read_comp_easy') {
           return MaterialPageRoute(builder: (context) => const ReadCompEasy());
         } else if (settings.name == '/read_comp_medium') {
@@ -106,6 +115,34 @@ class MyApp extends StatelessWidget {
               builder: (context) => const ReadCompMedium());
         } else if (settings.name == '/read_comp_hard') {
           return MaterialPageRoute(builder: (context) => const ReadCompHard());
+        }
+        // Word Pronunciation routes
+        else if (settings.name == '/wordpro_easy') {
+          return MaterialPageRoute(builder: (context) => const WordProEasy());
+        } else if (settings.name == '/wordpro_medium') {
+          return MaterialPageRoute(builder: (context) => const WordProMedium());
+        } else if (settings.name == '/wordpro_hard') {
+          return MaterialPageRoute(builder: (context) => const WordProHard());
+        }
+        // Sentence Composition routes
+        else if (settings.name == '/sentcomp_easy') {
+          return MaterialPageRoute(builder: (context) => const SentCompEasy());
+        } else if (settings.name == '/sentcomp_medium') {
+          return MaterialPageRoute(
+              builder: (context) => const SentCompMedium());
+        } else if (settings.name == '/sentcomp_hard') {
+          return MaterialPageRoute(builder: (context) => const SentCompHard());
+        }
+        // Vocabulary Skills routes
+        else if (settings.name == '/vocabskills_easy') {
+          return MaterialPageRoute(
+              builder: (context) => const VocabSkillsEasy());
+        } else if (settings.name == '/vocabskills_medium') {
+          return MaterialPageRoute(
+              builder: (context) => const VocabSkillsMedium());
+        } else if (settings.name == '/vocabskills_hard') {
+          return MaterialPageRoute(
+              builder: (context) => const VocabSkillsHard());
         }
         return null;
       },

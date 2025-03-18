@@ -2,32 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:i_read_app/models/module.dart';
 import 'package:i_read_app/services/api.dart';
-
 import '../../pages/modulecontent_page.dart';
 
-class ReadCompEasy extends StatefulWidget {
-  const ReadCompEasy({super.key});
+class WordProHard extends StatefulWidget {
+  const WordProHard({super.key});
 
   @override
-  _ReadCompEasyState createState() => _ReadCompEasyState();
+  _WordProHardState createState() => _WordProHardState();
 }
 
-class _ReadCompEasyState extends State<ReadCompEasy> {
+class _WordProHardState extends State<WordProHard> {
   final ApiService apiService = ApiService();
-  late Future<List<Module>> _easyModulesFuture;
+  late Future<List<Module>> _hardModulesFuture;
 
   @override
   void initState() {
     super.initState();
-    _easyModulesFuture = _fetchEasyModules();
+    _hardModulesFuture = _fetchHardModules();
   }
 
-  Future<List<Module>> _fetchEasyModules() async {
+  Future<List<Module>> _fetchHardModules() async {
     List<Module> modules = await apiService.getModules();
     return modules
         .where((module) =>
-            module.difficulty == 'Easy' &&
-            module.category == 'Reading Comprehension')
+            module.difficulty == 'Hard' &&
+            module.category == 'Word Pronunciation')
         .toList();
   }
 
@@ -37,8 +36,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushNamed(context,
-            '/reading_comprehension_levels'); // Navigate back to ReadingComprehensionLevels
+        Navigator.pushNamed(context, '/wordpro_levels');
         return false; // Prevent default back behavior
       },
       child: Scaffold(
@@ -49,11 +47,11 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             icon: const Icon(Icons.arrow_back,
                 color: Color(0xFF8B4513)), // Brown back arrow
             onPressed: () {
-              Navigator.pushNamed(context, '/reading_comprehension_levels');
+              Navigator.pushNamed(context, '/wordpro_levels');
             },
           ),
           title: Text(
-            'Easy',
+            'Hard',
             style: GoogleFonts.montserrat(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -68,38 +66,34 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
           color: const Color(0xFFF5E8C7), // Manila paper background
           padding: const EdgeInsets.all(20.0),
           child: FutureBuilder<List<Module>>(
-            future: _easyModulesFuture,
+            future: _hardModulesFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
-                  child: CircularProgressIndicator(
-                    color: Color(0xFF8B4513), // Brown
-                  ),
+                  child: CircularProgressIndicator(color: Color(0xFF8B4513)),
                 );
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text(
                     'Error loading modules: ${snapshot.error}',
-                    style: GoogleFonts.montserrat(
-                      color: const Color(0xFF8B4513), // Brown
-                    ),
+                    style:
+                        GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
                   ),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
                   child: Text(
-                    'No Easy modules available',
-                    style: GoogleFonts.montserrat(
-                      color: const Color(0xFF8B4513), // Brown
-                    ),
+                    'No Hard modules available',
+                    style:
+                        GoogleFonts.montserrat(color: const Color(0xFF8B4513)),
                   ),
                 );
               }
 
-              final easyModules = snapshot.data!;
+              final hardModules = snapshot.data!;
               return SingleChildScrollView(
                 child: Column(
-                  children: easyModules
+                  children: hardModules
                       .map((module) => _buildModuleButton(context, module))
                       .toList(),
                 ),
@@ -115,7 +109,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: SizedBox(
-        width: 400, // Increased width
+        width: 400,
         child: ElevatedButton(
           onPressed: () {
             Navigator.push(
@@ -123,7 +117,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
               MaterialPageRoute(
                 builder: (context) => ModuleContentPage(
                   module: module,
-                  backRoute: '/read_comp_easy',
+                  backRoute: '/wordpro_hard',
                 ),
               ),
             );
@@ -137,7 +131,7 @@ class _ReadCompEasyState extends State<ReadCompEasy> {
             style: GoogleFonts.montserrat(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white, // White text
+              color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
