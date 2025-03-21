@@ -6,6 +6,7 @@ import 'package:i_read_app/services/api.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../quiz/app_quiz.dart';
+import '../quiz/wordpro_quiz.dart';
 
 class ModuleContentPage extends StatelessWidget {
   final Module module;
@@ -41,7 +42,6 @@ class ModuleContentPage extends StatelessWidget {
     try {
       List<Module> modules = await apiService.getModules();
       Module updatedModule = modules.firstWhere((m) => m.id == moduleId);
-      // Check if completed > 0 indicates the quiz is done
       log('Module ${updatedModule.title} completion status: ${updatedModule.completed}');
       return updatedModule.completed > 0;
     } catch (e) {
@@ -104,7 +104,7 @@ class ModuleContentPage extends StatelessWidget {
         ? module.materials[0].name
         : 'Untitled File';
     final String fileUrl = module.materials.isNotEmpty
-        ? 'http://127.0.0.1:8000/${module.materials[0].fileUrl}' // Add your base URL
+        ? 'http://127.0.0.1:8000/${module.materials[0].fileUrl}' // Adjust base URL as needed
         : '';
 
     return WillPopScope(
@@ -115,10 +115,9 @@ class ModuleContentPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFF5E8C7), // Manila paper
-          elevation: 0, // Flat look
+          elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back,
-                color: Color(0xFF8B4513)), // Brown back arrow
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF8B4513)),
             onPressed: () {
               Navigator.pushNamed(context, backRoute);
             },
@@ -145,19 +144,18 @@ class ModuleContentPage extends StatelessWidget {
                 Text(
                   module.title,
                   style: GoogleFonts.montserrat(
-                    color: const Color(0xFF8B4513), // Brown
+                    color: const Color(0xFF8B4513),
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
-                    height: 2, color: const Color(0xFF8B4513)), // Brown divider
+                Container(height: 2, color: const Color(0xFF8B4513)), // Divider
                 const SizedBox(height: 20),
                 Text(
                   'Description:',
                   style: GoogleFonts.montserrat(
-                    color: const Color(0xFF8B4513), // Brown
+                    color: const Color(0xFF8B4513),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -166,7 +164,7 @@ class ModuleContentPage extends StatelessWidget {
                 Text(
                   module.description,
                   style: GoogleFonts.montserrat(
-                    color: const Color(0xFF8B4513), // Brown
+                    color: const Color(0xFF8B4513),
                     fontSize: 16,
                   ),
                 ),
@@ -180,14 +178,14 @@ class ModuleContentPage extends StatelessWidget {
                       child: Text(
                         fileTitle,
                         style: GoogleFonts.montserrat(
-                          color: const Color(0xFF8B4513), // Brown
+                          color: const Color(0xFF8B4513),
                           fontSize: 18,
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.download,
-                          color: Color(0xFF8B4513)), // Brown
+                      icon:
+                          const Icon(Icons.download, color: Color(0xFF8B4513)),
                       onPressed: fileUrl.isNotEmpty
                           ? () => _downloadFile(fileUrl, context)
                           : null,
@@ -207,6 +205,42 @@ class ModuleContentPage extends StatelessWidget {
                           bool proceed =
                               await _showReattemptConfirmation(context);
                           if (proceed) {
+                            if (module.category == 'Word Pronunciation') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WordProQuiz(
+                                    moduleTitle: module.title,
+                                    uniqueIds: [module.id], // Adjust if needed
+                                    difficulty: module.difficulty,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AppQuiz(
+                                    module: module,
+                                    backRoute: backRoute,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        } else {
+                          if (module.category == 'Word Pronunciation') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WordProQuiz(
+                                  moduleTitle: module.title,
+                                  uniqueIds: [module.id], // Adjust if needed
+                                  difficulty: module.difficulty,
+                                ),
+                              ),
+                            );
+                          } else {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -217,20 +251,10 @@ class ModuleContentPage extends StatelessWidget {
                               ),
                             );
                           }
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AppQuiz(
-                                module: module,
-                                backRoute: backRoute,
-                              ),
-                            ),
-                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8B4513), // Brown
+                        backgroundColor: const Color(0xFF8B4513),
                         padding: const EdgeInsets.symmetric(vertical: 25),
                       ),
                       child: Text(
